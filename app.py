@@ -27,18 +27,11 @@ def search_movies():
         results = []
     return jsonify(results)
 
-@app.route('/like', methods=['POST'])
-def like_movie():
-    data = request.json
-    movie_id = data['movie_id']
-    user_id = data['user_id']
-    collaborative_filtering.like_movie(user_id, movie_id)
-    return jsonify({'status': 'success'})
-
 @app.route('/recommend', methods=['GET'])
 def recommend_movies():
-    user_id = request.args.get('user_id')
-    recommendations = collaborative_filtering.get_recommendations(user_id)
+    movieID = request.args.get('movieID')
+    random_movies = [movies.sample(n=5)[['MovieID', 'Title']].to_dict(orient='records') for _ in range(5)]
+    recommendations = random_movies
     return jsonify(recommendations)
 
 @app.route('/poster', methods=['GET'])
