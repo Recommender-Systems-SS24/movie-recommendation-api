@@ -36,15 +36,15 @@ def get_title_cosine_sim_matrix():
 def read_movies_metadata_file():
     global _movies_metadata_df
     _movies_metadata_df = pd.read_parquet(constants.MOVIES_METADATA_PARQUET_FILE_PATH)
-    print(_movies_metadata_df.head())
-    print(_movies_metadata_df.shape)
+    # print(_movies_metadata_df.head())
+    # print(_movies_metadata_df.shape)
 
 
 def read_item_user_matrix_file():
     global _item_user_matrix_df
     _item_user_matrix_df = pd.read_parquet(constants.ITEM_USER_MATRIX_PARQUET_FILE_PATH)
-    print(_item_user_matrix_df.head())
-    print(_item_user_matrix_df.shape)
+    # print(_item_user_matrix_df.head())
+    # print(_item_user_matrix_df.shape)
 
 
 def read_description_cosine_sim_matrix():

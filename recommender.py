@@ -15,7 +15,7 @@ def get_recommendations(movie_id):
 
     rec_2 = cfr.get_movie_recommendations(movie_id)
     if len(rec_2) < 1:
-        # it is not possible to perform item-based collaborative filtering for all methods, as cf is done with a
+        # it is not possible to perform item-based collaborative filtering for all movies, as cf is done with a
         # smaller dataset
         print("director set intersection cardinality was used for movie with id {}".format(movie_id))
         rec_2 = cbr.get_similar_movies(movie_id, [

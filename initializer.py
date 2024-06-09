@@ -17,6 +17,7 @@ def initialize_description_rf_idf_cosine_sim():
     tfidf_matrix = tfidf.fit_transform(movie_metadata_df['description'])
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     np.save(constants.DESCRIPTION_COSINE_SIM_MATRIX_NPY_FILE_PATH, cosine_sim)
+    print('Initialized description cosine similarity matrix {}'.format(cosine_sim.shape))
 
 
 def initialize_title_tf_idf_cosine_sim():
@@ -26,6 +27,7 @@ def initialize_title_tf_idf_cosine_sim():
     tfidf_matrix = tfidf.fit_transform(movie_metadata_df['title'])
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     np.save(constants.TITLE_COSINE_SIM_MATRIX_NPY_FILE_PATH, cosine_sim)
+    print('Initialized title cosine similarity matrix {}'.format(cosine_sim.shape))
 
 
 def parse_movie_json(json_data):
@@ -103,26 +105,28 @@ def construct_movie_metadata_dataframe_from_ids(directory_path, movie_ids):
 
 def initialize_movie_metadata(movies_file_path, directory_path):
     movies_df = pd.read_csv(movies_file_path)
-    print(movies_df.head())
-    print(movies_df.shape)
-    print(movies_df['movieId'].max())
+    # print(movies_df.head())
+    # print(movies_df.shape)
+    # print(movies_df['movieId'].max())
     # only include movies that are listed in the movies.csv (from movielens ml-20m) AND for which there is a
     # json file containing necessary metadata
     movies_metadata_df = construct_movie_metadata_dataframe_from_ids(directory_path, movies_df['movieId'].tolist())
-    print(movies_metadata_df.head())
-    print(movies_metadata_df.shape)
+    # print(movies_metadata_df.head())
+    # print(movies_metadata_df.shape)
     movies_metadata_df.to_parquet(constants.MOVIES_METADATA_PARQUET_FILE_PATH, index=False)
+    print('Initialized movies metadata df {}'.format(movies_metadata_df.shape))
 
 
 def initialize_item_user_matrix(ratings_file_path):
     ratings_df = pd.read_csv(ratings_file_path)
     ratings_df.drop(columns=['timestamp'], inplace=True)
-    print(ratings_df.head())
-    print(ratings_df.shape)
+    # print(ratings_df.head())
+    # print(ratings_df.shape)
     item_user_matrix_df = pd.pivot_table(ratings_df, index='movieId', columns='userId', values='rating')
-    print(item_user_matrix_df.head(10))
-    print(item_user_matrix_df.shape)
+    # print(item_user_matrix_df.head(10))
+    # print(item_user_matrix_df.shape)
     item_user_matrix_df.to_parquet(constants.ITEM_USER_MATRIX_PARQUET_FILE_PATH)
+    print('Initialized item user matrix {}'.format(item_user_matrix_df.shape))
 
 
 if __name__ == '__main__':
