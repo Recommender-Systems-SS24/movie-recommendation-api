@@ -7,7 +7,7 @@ import pandas as pd
 
 from loader import get_movies_metadata
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def initialize_description_rf_idf_cosine_sim():
@@ -15,7 +15,7 @@ def initialize_description_rf_idf_cosine_sim():
     tfidf = TfidfVectorizer(stop_words='english')
     movie_metadata_df['description'] = movie_metadata_df['description'].fillna('')
     tfidf_matrix = tfidf.fit_transform(movie_metadata_df['description'])
-    cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     np.save(constants.DESCRIPTION_COSINE_SIM_MATRIX_NPY_FILE_PATH, cosine_sim)
 
 
