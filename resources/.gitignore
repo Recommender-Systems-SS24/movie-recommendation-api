@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Unignore directories so we can check the .gitkeep and .gitignore files within them
+!*/
+
+# Unignore .gitkeep files
+!.gitkeep
+
+# Unignore .gitignore files
+!.gitignore
