@@ -13,6 +13,7 @@ def measure_execution_time(func, *args, **kwargs):
 
 if __name__ == '__main__':
     movie_id = 42
+    # for the first recommendations additional time is needed for loading the files
     rec_list_1 = measure_execution_time(recommender.get_recommendation_list_1, movie_id)
     print(rec_list_1)
     rec_list_2 = measure_execution_time(recommender.get_recommendation_list_2, movie_id)

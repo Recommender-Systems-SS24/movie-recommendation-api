@@ -65,7 +65,11 @@ def parse_movie_json(json_data):
     # Extract title
     title = json_data.get('movielens', {}).get('title', '')
 
+    # Extract description
     description = json_data.get('movielens', {}).get('plotSummary', '')
+
+    # Extract rating
+    rating = json_data.get('movielens', {}).get('avgRating', 0.0)
 
     return {
         'movieId': movielens_id,
@@ -77,7 +81,8 @@ def parse_movie_json(json_data):
         'tmdb_genres': tmdb_genres_names,
         'imdb_genres': imdb_genres,
         'movielens_actors': movielens_actors,
-        'description': description
+        'description': description,
+        'rating': rating
     }
 
 

@@ -76,10 +76,12 @@ def enrich_with_data(movie_id):
     movie_metadata = loader.get_movies_metadata()
     title = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'title'].values
     genres = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'movielens_genres'].values
+    rating = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'rating'].values
     return {
         'MovieID': movie_id,
         'Title': title[0] if len(title) > 0 else '',
         'Genres': list(genres[0]) if len(genres) > 0 else '',
+        'Rating': rating[0] if len(rating) > 0 else '',
     }
 
 
