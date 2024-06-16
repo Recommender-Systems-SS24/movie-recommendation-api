@@ -28,9 +28,13 @@ def search_movies():
 
 @app.route('/recommend', methods=['GET'])
 def recommend_movies():
-    movieID = request.args.get('movieID')
-    print('recoms for id ' + movieID)
-    recommendations = recommender.get_recommendations(int(movieID))
+    movie_id = request.args.get('movieID')
+    list_number = request.args.get('listNr')
+    print('recoms for id ' + movie_id)
+    if list_number:
+        print('list number ' + list_number)
+        list_number = int(list_number)
+    recommendations = recommender.get_recommendations(int(movie_id), list_number)
     # recommendations = recommender.get_random_recommendations()
     return jsonify(recommendations)
 

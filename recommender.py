@@ -9,16 +9,56 @@ import gpt_recommandation.recommandations as gpt
 
 def get_recommendations(movie_id):
     # TODO: choose final recommendations algorithms to be used in the presentation
-    rec_1 = cbr.get_similar_movies(movie_id, [{'weight': 1,
-                                               'measure': set_based_similarity(jaccard_index, SetExtractor.KEYWORD)}])
-    rec_1_enriched = [enrich_with_data(rec[0]) for rec in rec_1]
 
-    rec_2 = cfr.get_movie_recommendations(movie_id)
-    if len(rec_2) < 1:
+    if list_number:
+        if list_number == 1:
+            return get_recommendation_list_1(movie_id)
+        elif list_number == 2:
+            return get_recommendation_list_2(movie_id)
+        elif list_number == 3:
+            return get_recommendation_list_3(movie_id)
+        elif list_number == 4:
+            return get_recommendation_list_4(movie_id)
+        elif list_number == 5:
+            return get_recommendation_list_5(movie_id)
+
+    return [get_recommendation_list_1(movie_id)['List'], get_recommendation_list_2(movie_id)['List'],
+            get_recommendation_list_3(movie_id)['List'], get_recommendation_list_4(movie_id)['List'],
+            get_recommendation_list_5(movie_id)['List']]
+
+
+def get_recommendation_list_1(movie_id):
+    rec = cbr.get_similar_movies(movie_id, [{'weight': 1,
+                                               'measure': set_based_similarity(jaccard_index, SetExtractor.KEYWORD)}])
+    rec_enriched = [enrich_with_data(rec[0]) for rec in rec]
+    return {'Name': 'Keywords', 'List': rec_enriched}
+
+
+def get_recommendation_list_2(movie_id):
+    rec = cbr.get_similar_movies(movie_id, [{'weight': 1, 'measure': genre_custom_similarity}])
+    rec_enriched = [enrich_with_data(rec[0]) for rec in rec]
+    return {'Name': 'Genres custom', 'List': rec_enriched}
+
+
+def get_recommendation_list_3(movie_id):
+    rec = cbr.get_similar_movies(movie_id, [{'weight': 1, 'measure': title_cosine_similarity}])
+    rec_enriched = [enrich_with_data(rec[0]) for rec in rec]
+    return {'Name': 'TF-IDF Title', 'List': rec_enriched}
+
+
+def get_recommendation_list_4(movie_id):
+    rec = cbr.get_similar_movies(movie_id, [{'weight': 1, 'measure': description_cosine_similarity}])
+    rec_enriched = [enrich_with_data(rec[0]) for rec in rec]
+    return {'Name': 'TF-IDF Description', 'List': rec_enriched}
+
+
+def get_recommendation_list_5(movie_id):
+    rec = cfr.get_movie_recommendations(movie_id)
+    if len(rec) < 1:
         # it is not possible to perform item-based collaborative filtering for all movies, as cf is done with a
         # smaller dataset
         print("director set intersection cardinality was used for movie with id {}".format(movie_id))
-        rec_2 = cbr.get_similar_movies(movie_id, [
+        rec = cbr.get_similar_movies(movie_id, [
             {'weight': 1, 'measure': set_based_similarity(intersection_cardinality, SetExtractor.DIRECTOR)}])
     rec_2_enriched = [enrich_with_data(rec[0]) for rec in rec_2]
 
@@ -34,13 +74,18 @@ def get_recommendations(movie_id):
     rec_6 = gpt.get_similar_movies(movie_id)
     rec_6_enriched = [enrich_with_title(rec[0][0]) for rec in rec_6]
 
-    return [rec_1_enriched, rec_2_enriched, rec_3_enriched, rec_4_enriched, rec_5_enriched, rec_6_enriched]
+    rec_enriched = [enrich_with_data(rec[0]) for rec in rec]
+    return {'Name': 'Collaborative filteríng', 'List': rec_enriched}
+
+    return [rec_enriched, rec_2_enriched, rec_3_enriched, rec_4_enriched, rec_5_enriched, rec_6_enriched]
 
 
 def enrich_with_data(movie_id):
     # TODO: add more data for display
     movie_metadata = loader.get_movies_metadata()
     title = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'title'].values
+    genres = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'movielens_genres'].values
+    rating = movie_metadata.loc[movie_metadata['movieId'] == movie_id, 'rating'].values
     return {
         'MovieID': movie_id,
         'Title': title[0] if len(title) > 0 else ''
