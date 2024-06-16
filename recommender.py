@@ -5,7 +5,7 @@ from content_based.similarity_measures.custom import genre_custom_similarity
 from content_based.similarity_measures.set_based import set_based_similarity, jaccard_index, SetExtractor, \
     intersection_cardinality
 from content_based.similarity_measures.text_based import title_cosine_similarity, description_cosine_similarity
-
+import gpt_recommandation.recommandations as gpt
 
 def get_recommendations(movie_id):
     # TODO: choose final recommendations algorithms to be used in the presentation
@@ -31,7 +31,10 @@ def get_recommendations(movie_id):
     rec_5 = cbr.get_similar_movies(movie_id, [{'weight': 1, 'measure': description_cosine_similarity}])
     rec_5_enriched = [enrich_with_data(rec[0]) for rec in rec_5]
 
-    return [rec_1_enriched, rec_2_enriched, rec_3_enriched, rec_4_enriched, rec_5_enriched]
+    rec_6 = gpt.get_similar_movies(movie_id)
+    rec_6_enriched = [enrich_with_title(rec[0][0]) for rec in rec_6]
+
+    return [rec_1_enriched, rec_2_enriched, rec_3_enriched, rec_4_enriched, rec_5_enriched, rec_6_enriched]
 
 
 def enrich_with_data(movie_id):
@@ -43,6 +46,14 @@ def enrich_with_data(movie_id):
         'Title': title[0] if len(title) > 0 else ''
     }
 
+def enrich_with_title(movie_title):
+    # TODO: add more data for display
+    movie_metadata = loader.get_movies_metadata()
+    movie_id = movie_metadata.loc[movie_metadata['title'] == movie_title, 'movieId'].values
+    return {
+        'MovieID': int(movie_id[0]) if len(movie_id) > 0 else 0,
+        'Title': movie_title
+    }
 
 def get_random_recommendations():
     # get some random movies for testing
