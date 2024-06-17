@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory, abort
 from flask_cors import CORS
-import pandas as pd
 import os
 import json
 
@@ -19,11 +18,17 @@ def search_movies():
     if query:
         # Search for movies that contain the query string in their title
         results = movie_metadata[movie_metadata['title'].str.lower().str.contains(query, na=False)]
-        results = results[['movieId', 'title']].rename(columns={'movieId': 'MovieID', 'title': 'Title'})
-        results = results[['MovieID', 'Title']].to_dict(orient='records')
+        result_ids = results['movieId'].values
+        results_enriched = [recommender.enrich_with_data(int(m_id)) for m_id in result_ids]
+        # print(result_ids)
+        # results = results[['movieId', 'title']].rename(columns={'movieId': 'MovieID', 'title': 'Title'})
+        # results = results[['MovieID', 'Title']].to_dict(orient='records')
     else:
-        results = []
-    return jsonify(results)
+        results_enriched = []
+
+    result_json = jsonify(results_enriched)
+    # print(result_json)
+    return result_json
 
 
 @app.route('/recommend', methods=['GET'])
