@@ -5,6 +5,7 @@ from loader import get_item_user_matrix
 def get_movie_recommendations(reference_movie_id):
     similarity_scores = []
 
+    # each row represents a movie, each column a user
     item_user_matrix_df = get_item_user_matrix()
 
     try:
